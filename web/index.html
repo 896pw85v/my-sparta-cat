@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Monet Music Search</title>
+  <link rel="stylesheet" href="styles.css" >
+</head>
+<body>
+  <div class="canvas">
+    <h1 class="title">Monet Music Search</h1>
+    <p class="subtitle">
+      Soft colors, quiet mood—find an artist and a song to paint your playlist.
+    </p>
+
+    <form id="form" >
+      <div class="field-group">
+        <label for="artist">Artist</label>
+        <input type="text" id="artist" name="artist" placeholder="e.g. The Weeknd" />
+      </div>
+
+      <div class="field-group">
+        <label for="song">Song name</label>
+        <input type="text" id="song" name="song" placeholder="e.g. Blinding Lights" />
+      </div>
+
+      <div class="actions">
+        <button id='submit-btn' type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="response-div" class="canvas">
+    <h1 class="title">His / her releases: </h1>
+    <div id="releases-div">
+      <div id="blank-ph">No content</div>
+      <!-- from js -->
+    </div>
+  </div>
+  <script rel="script/javascript" src="scripts.js"></script>
+</body>
+</html>
