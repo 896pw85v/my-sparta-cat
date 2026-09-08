@@ -36,6 +36,75 @@
       <!-- from js -->
     </div>
   </div>
+  <div class="auth-card">
+    <h2>Welcome</h2>
+  
+    <form id="sign">
+      <label for="u-name">ID</label>
+      <input type="text" id="u-name" name="u-name" placeholder="Your name">
+  
+      <button >Continue</button>
+    </form>
+  </div>
+  
+  <style>
+    .auth-card {
+      width: 280px;
+      padding: 20px;
+      border-radius: 14px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 240, 220, 0.9),
+        rgba(210, 225, 255, 0.9)
+      );
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      backdrop-filter: blur(6px);
+      font-family: "Georgia", serif;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+  
+    .auth-card h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-weight: 600;
+      color: #3a4a5a;
+      text-align: center;
+    }
+  
+    .auth-card label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #4a5568;
+    }
+  
+    .auth-card input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e0;
+      background: rgba(255,255,255,0.8);
+    }
+  
+    .auth-card button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #6fa8dc;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+  
+    .auth-card button:hover {
+      background: #5b8fc4;
+    }
+  </style>
+  
   <script rel="script/javascript" src="scripts.js"></script>
 </body>
 </html>

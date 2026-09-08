@@ -1,7 +1,4 @@
-# Do I need framework for this? 
-# Frontend, no
-# Backend, maybe
-# problem is I don't know yet what each part needs to do
+# this is a deprecated pre-mature api
 
 import http.server
 import json

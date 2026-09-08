@@ -20,9 +20,12 @@ musicbrainzngs.set_useragent('learning to use mb', '0')
 # artist=twk['id']
 releases = musicbrainzngs.browse_release_groups('c8b03190-306c-4120-bb0b-6f2ebfc06ea9', limit=10)
 # dict_keys(['release-group-list', 'release-group-count'])
+
 images = []
 for each in releases['release-group-list']: 
-    images.append(musicbrainzngs.get_release_group_image_list(each['id']))
+    image: dict = musicbrainzngs.get_release_group_image_list(each['id'])
+    image['title'] = each['title']
+    images.append(image)
 """
 res > Song1 >  - images -> [ {...: ...} ] (idk why but only one dict)
               |- releases
@@ -36,3 +39,11 @@ def get_images():
 # fastapi packs objects into json
 # for i in images: 
 #     print(type(i))
+
+"""
+[x] front and back talks!!
+[x] Third party api 
+[ ] db to back
+[ ] account
+[ ] writing review
+"""
