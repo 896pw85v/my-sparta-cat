@@ -20,7 +20,7 @@ def read_root():
 @app.post("/")
 def search_for(body: dict):
     print(body) # artist: ... , song: ...
-    artist: str = body['artist']
+    artist: str = body['artist'] or 'the weeknd'
     song: str = body['song']
     # if artist == '': 
     #     pass
@@ -29,11 +29,9 @@ def search_for(body: dict):
     if song == '': 
         # just search artist
         # should do at least three
-        res: dict = {
-            'artist': artist or 'the weekeeeeeend'
-        }
+        res: dict = {}
         # should pass a name instead
-        res['albums'] = mb_lib.get_artist_album_with_cover('c8b03190-306c-4120-bb0b-6f2ebfc06ea9')
+        res = mb_lib.get_artist_album_covers(artist)
         return res
     # maybe pack artist portrait as well
     return {}

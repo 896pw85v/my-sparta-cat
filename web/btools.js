@@ -1,6 +1,8 @@
+// complete dom interaction, too ugly
 export function mkCard(pack) {
-    const artistName = pack['artist'];
-    const albums = pack['albums'];
+    const artistName = pack[0];
+    console.log(artistName)
+    const albums = pack[1];
     
     // Create the main card container
     const artistCard = document.createElement('div');
@@ -14,14 +16,14 @@ export function mkCard(pack) {
     h2.classList.add('artist-name');
     h2.textContent = artistName;
 
-    const img = document.createElement('img');
-    img.classList.add('artist-photo');
-    img.src = "";
-    img.alt = `${artistName} Portrait`;
+    // const img = document.createElement('img');
+    // img.classList.add('artist-photo');
+    // img.src = "";
+    // img.alt = `${artistName} Portrait`;
 
     // Assemble artist info
     artistInfo.appendChild(h2);
-    artistInfo.appendChild(img);
+    // artistInfo.appendChild(img);
     artistCard.appendChild(artistInfo);
 
     // Create the release tiles container
@@ -42,7 +44,7 @@ export function mkCard(pack) {
 
         const albumImg = document.createElement('img');
         albumImg.src = cover;
-        albumImg.alt = "Album Cover";
+        albumImg.alt = title + " Cover";
 
         const span = document.createElement('span');
         span.classList.add('release-label');

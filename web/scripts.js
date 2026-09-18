@@ -7,8 +7,6 @@ document.getElementById('form').addEventListener('submit', (e) => {
     // formdata pack the form, then put it into json
     const fd = new FormData(e.target)
     const myjson = Object.fromEntries(fd)
-    // console.log(typeof myjson)
-    // console.log(myjson)
     fetch(burl, {
         method: 'POST', 
         body: JSON.stringify(myjson),
@@ -19,19 +17,17 @@ document.getElementById('form').addEventListener('submit', (e) => {
     .then(res => loadReleases(res))
     .catch((error) => (console.log(error)))
 })
-// TODO: put artist works for mult. artists
-let out = {}
-function loadReleases(ajson) {
-    // console.log(ajson)
-    const card = tools.mkCard(ajson) // this should be just one of the many cards
-        // card = document.createElement('div');
-    
-    releasesDiv.appendChild(card)
+
+function loadReleases(name_covers) {
+    releasesDiv.innerHTML = '';
+    Object.entries(name_covers).forEach(entry => {
+        const card = tools.mkCard(entry); // this should be just one of the many cards
+        releasesDiv.appendChild(card);
+    });   
 }
 
-
 /*
-one res :   artist: ..., 
+name_covers: name -> []
         [Song1 >  - images -> [ {...: ...} ] (idk why but only one dict)
                     |- releases
                     |- title -> title
@@ -55,7 +51,6 @@ sign.addEventListener('submit', (e) => {
         method: "POST", 
         headers: {
             'Content-Type': 'application/json',
-
         },
         body: JSON.stringify(myjson)
     }).then(res => res.json())
