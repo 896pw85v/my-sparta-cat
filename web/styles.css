@@ -8,6 +8,7 @@
 
 body {
   margin: 0;
+  gap: 20px;
   min-height: 100vh;
   font-family: "Georgia", "Times New Roman", serif;
   color: var(--text);
@@ -15,7 +16,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .canvas {
@@ -117,4 +118,83 @@ div#blank-ph {
   border-radius: 20px;
   background-color: #fff;
   padding: 10px;
+}
+
+/* floating */
+/* Artist Card Container */
+.artist-card {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #f7f7f7;
+}
+
+/* Artist Header */
+.artist-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.artist-name {
+  margin: 0;
+}
+
+.artist-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Release Tiles Grid */
+.release-tiles {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+}
+
+/* Individual Tile */
+.release-tile {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.release-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hover enlarge + float */
+.release-tile:hover {
+  transform: scale(1.25);
+  z-index: 10;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* Album name label */
+.release-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px;
+  font-size: 0.75rem;
+  text-align: center;
+  background: rgba(0,0,0,0.65);
+  color: white;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* Reveal label on hover */
+.release-tile:hover .release-label {
+  opacity: 1;
 }

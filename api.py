@@ -17,7 +17,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/plain')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers() # must have blank line
-        self.wfile.write(json.dumps(mb_lib.get_images()).encode('utf-8'))
+        self.wfile.write(json.dumps(mb_lib.get_artist_album_with_cover()).encode('utf-8'))
 
 
 

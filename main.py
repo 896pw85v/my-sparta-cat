@@ -18,12 +18,30 @@ def read_root():
 
 
 @app.post("/")
-def read_item(body: dict):
-    print(body)
-    return mb_lib.get_images()
-# simply return objects. FastAPI packs it into json
+def search_for(body: dict):
+    print(body) # artist: ... , song: ...
+    artist: str = body['artist']
+    song: str = body['song']
+    # if artist == '': 
+    #     pass
+        # just search song
+        # mb_lib.get_songs_same_name()
+    if song == '': 
+        # just search artist
+        # should do at least three
+        res: dict = {
+            'artist': artist or 'the weekeeeeeend'
+        }
+        # should pass a name instead
+        res['albums'] = mb_lib.get_artist_album_with_cover('c8b03190-306c-4120-bb0b-6f2ebfc06ea9')
+        return res
+    # maybe pack artist portrait as well
+    return {}
+
 
 @app.post("/log-in")
 def log_in(cre: dict):
     print(cre)
     return db_conn.sign_user(cre['u-name'])
+
+

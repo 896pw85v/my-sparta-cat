@@ -1,8 +1,8 @@
 import musicbrainzngs
-import json
-musicbrainzngs.set_useragent('learning to use mb', '0')
-# res = musicbrainzngs.search_artists('the weeknd', limit=3)
 
+musicbrainzngs.set_useragent('learning to use api', '0')
+# res = musicbrainzngs.search_artists('the weeknd', limit=3)
+artist_album_cache: dict = {}
 # returned: 
 # artists -+ ...
 #         |+ ...
@@ -18,14 +18,9 @@ musicbrainzngs.set_useragent('learning to use mb', '0')
 # twk: dict = artists[0]
 # print(twk['id'])
 # artist=twk['id']
-releases = musicbrainzngs.browse_release_groups('c8b03190-306c-4120-bb0b-6f2ebfc06ea9', limit=10)
 # dict_keys(['release-group-list', 'release-group-count'])
 
-images = []
-for each in releases['release-group-list']: 
-    image: dict = musicbrainzngs.get_release_group_image_list(each['id'])
-    image['title'] = each['title']
-    images.append(image)
+
 """
 res > Song1 >  - images -> [ {...: ...} ] (idk why but only one dict)
               |- releases
@@ -34,11 +29,24 @@ res > Song1 >  - images -> [ {...: ...} ] (idk why but only one dict)
       Song3...
 """
 
-def get_images(): 
+# should receive an id, called by another func
+def get_artist_album_with_cover(artist_id: str): 
+    print(artist_id)
+    if artist_id in artist_album_cache: 
+        return artist_album_cache[artist_id]
+    images = []
+    releases = musicbrainzngs.browse_release_groups(artist_id, limit=10)
+    for release in releases['release-group-list']: 
+        print(release['id'])
+        try: 
+            image: dict = musicbrainzngs.get_release_group_image_list(release['id'])
+            image['title'] = release['title']
+            images.append(image)
+        except: 
+            pass
+        # cache to db
+    print(len(images))
     return images
-# fastapi packs objects into json
-# for i in images: 
-#     print(type(i))
 
 """
 [x] front and back talks!!
@@ -46,4 +54,7 @@ def get_images():
 [ ] db to back
 [ ] account
 [ ] writing review
+[ ] logged in with session and cookie
 """
+# {'id': 'fc5ecd80-3961-4036-ae95-1e629428562f', 'type': 'Album', 'title': 'Greatest Hits', 'first-release-date': '2026-01-31', 'primary-type': 'Album'}
+# the greatest hit. not gonna report cuz need account. keep here as a note for future
