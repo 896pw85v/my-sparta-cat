@@ -60,12 +60,19 @@ def fetch_artist_album_with_cover(artist_id: str) -> list[dict]:
             image: dict = musicbrainzngs.get_release_group_image_list(release['id'])
             image['title'] = release['title']
             images.append(image) # maybe just return a subset of api response
+            # try do same site by sending html pages from back end
         except: 
             pass # or continue
     # cache to db
     artist_album_cache[artist_id] = images
     print(len(images))
     return images
+
+def get_songs_same_name(name: str, offset: int = 0): 
+    res: dict = musicbrainzngs.search_recordings(recording=name, limit = 10) # recording aka songs?
+    # print(res.keys())
+    rec_list = res['recording-list']
+    return rec_list
 
 """
 [x] front and back talks!!

@@ -1,6 +1,6 @@
 import * as tools from "./btools.js"
 
-const releasesDiv = document.getElementById('releases-div');
+const releasesDiv = document.getElementById('artist-search');
 const burl = 'http://localhost:8000'
 const userProfile = {}
 
@@ -61,7 +61,7 @@ sign.addEventListener('submit', (e) => {
     }).then(res => res.json())
     .then(data => {
         if (data) {
-            sessionStorage.setItem('sid', data)
+            // sessionStorage.setItem('sid', data)
             updateUserProfile(fd.get('u-name'), '')
             sign.parentElement.style.display = "none"
         }

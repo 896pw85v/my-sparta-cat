@@ -1,5 +1,8 @@
+from pathlib import Path
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+
 import mb_lib
 import db_conn
 app = FastAPI()
@@ -14,9 +17,11 @@ app.add_middleware(
     allow_headers = ['*']
 )
 
+# index = Path('./web/index.html')
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    # return {"Hello": "World"}
+    return FileResponse('./web/index.html')
 
 
 @app.post("/")
@@ -24,10 +29,10 @@ def search_for(body: dict):
     print(body) # artist: ... , song: ...
     artist: str = body['artist'] or 'the weeknd'
     song: str = body['song']
-    # if artist == '': 
-    #     pass
+    if artist == '': 
         # just search song
-        # mb_lib.get_songs_same_name()
+        
+        mb_lib.get_songs_same_name(song)
     if song == '': 
         # just search artist
         res: dict = {}
@@ -46,7 +51,7 @@ def log_in(cre: dict, res: Response):
             # do session id token thing
             sid: str = uuid.uuid4() # idk how uuid work
             sessions[sid] = cre['u-name']
-            # res.set_cookie(key='sid', value=sid, httponly=True, max_age=60*60*24, samesite='none', secure=True)
+            res.set_cookie(key='sid', value=sid, httponly=True, max_age=60*60*24, samesite='lax', secure=True)
             return sid # This attempt to set a cookie via a Set-Cookie header was blocked due to user preference
         else:
             return ''
@@ -58,3 +63,50 @@ def sid(cookie):
     print(cookie)
     return 0
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.get('/styles.css')
+def give_css():
+    return FileResponse('./web/styles.css')
+
+@app.get('/scripts.js')
+def give_js(): 
+    return FileResponse('./web/scripts.js')
+
+@app.get('/btools.js')
+def give_tools(): 
+    return FileResponse('./web/btools.js')
