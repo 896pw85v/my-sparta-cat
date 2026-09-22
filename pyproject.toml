@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.141.1",
+    "musicbrainzngs>=0.7.1",
     "psycopg2>=2.9.12",
 ]
 

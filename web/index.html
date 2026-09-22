@@ -8,6 +8,23 @@
 </head>
 
 <body>
+  <header class="app-header">
+    <div class="logo-area">
+      <h1>Monet Music</h1>
+    </div>
+  
+    <div id="user-area" class="user-area logged-out">
+      <!-- Logged-out state -->
+      <!-- <button id="login-btn" class="login-btn">Sign In</button> -->
+  
+      <!-- Logged-in state -->
+      <div id="profile-box" class="profile-box hidden">
+        <img id="profile-photo" class="profile-photo" src="" alt="User Photo">
+        <span id="profile-name" class="profile-name"></span>
+      </div>
+    </div>
+  </header>
+  
   <div class="canvas">
     <h1 class="title">Monet Music Search</h1>
     <p class="subtitle">
@@ -39,10 +56,6 @@
 
     </div>
   </div>
-
-
-
-
 
   <div class="auth-card canvas">
     <h2>Welcome</h2>

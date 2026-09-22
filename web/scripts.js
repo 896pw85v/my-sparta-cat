@@ -2,6 +2,8 @@ import * as tools from "./btools.js"
 
 const releasesDiv = document.getElementById('releases-div');
 const burl = 'http://localhost:8000'
+const userProfile = {}
+
 document.getElementById('form').addEventListener('submit', (e) => {
     e.preventDefault()
     // formdata pack the form, then put it into json
@@ -45,6 +47,8 @@ const sign = document.getElementById('sign');
 sign.addEventListener('submit', (e) => {
     e.preventDefault()
     const fd = new FormData(e.target)
+    console.log(typeof fd)
+    console.log(fd)
     const myjson = Object.fromEntries(fd)
     console.log(myjson)
     fetch(burl + '/log-in', {
@@ -52,11 +56,18 @@ sign.addEventListener('submit', (e) => {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(myjson)
     }).then(res => res.json())
     .then(data => {
-        console.log(data)
-        console.log(typeof data)
+        if (data) {
+            sessionStorage.setItem('sid', data)
+            updateUserProfile(fd.get('u-name'), '')
+            sign.parentElement.style.display = "none"
+        }
+    })
+    .catch((reason) => {
+        console.error("During log-in: ", reason)
     })
 })
 
@@ -74,3 +85,27 @@ sign.addEventListener('submit', (e) => {
 //         ...
 //     }
 // }
+
+/** maybe this should be a tool */
+function updateUserProfile(username, photoUrl) {
+    console.log(username)
+    // const loginBtn = document.getElementById("login-btn");
+    const profileBox = document.getElementById("profile-box");
+    const profilePhoto = document.getElementById("profile-photo");
+    const profileName = document.getElementById("profile-name");
+  
+    // If no username → logged out
+    if (!username) {
+    //   loginBtn.classList.remove("hidden");
+      profileBox.classList.add("hidden");
+      return;
+    }
+  console.log('update')
+    // Logged-in state
+    // loginBtn.classList.add("hidden");
+    profileBox.classList.remove("hidden");
+  
+    // Update profile info
+    profileName.textContent = username;
+    profilePhoto.src = photoUrl || "https://tse1.mm.bing.net/th/id/OIP.KAFZkVR_hmUcavc7Dot5QAAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"; // fallback image
+  }

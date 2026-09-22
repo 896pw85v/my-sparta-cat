@@ -11,17 +11,19 @@ conn = psycopg2.connect(database="postgres",
 cur = conn.cursor()
 cur.execute('SET search_path = sparta_cat')
 
-def sign_user(u_name: str):
+def sign_user(user: dict):
     # TODO: SQL injection
-    if u_name == "": 
+    if user['u-name'] == "" or user['password'] == '': 
         return False
-    cur.execute('SELECT user_name FROM users WHERE user_name = %s', [u_name])
+    cur.execute('SELECT user_name FROM users WHERE user_name = %s AND  pass_hash = %s', (user['u-name'], user['password']))
     matched_users: list = cur.fetchall()
+    print(matched_users)
     # query only no commit?
     if len(matched_users) == 0: 
         return False
     elif len(matched_users) > 1: 
-        raise Exception('user conflict/clash')
+        print(matched_users)
+        raise Exception('user conflict/clash. (this is probably a db issue)')
     else: 
         return True
 # print(conn)

@@ -70,10 +70,23 @@ def fetch_artist_album_with_cover(artist_id: str) -> list[dict]:
 """
 [x] front and back talks!!
 [x] Third party api 
-[ ] db to back
-[ ] account
+[x] db to back
+[x] account
 [ ] writing review
 [ ] logged in with session and cookie
+[ ] https (live server), hashing password
 """
 # {'id': 'fc5ecd80-3961-4036-ae95-1e629428562f', 'type': 'Album', 'title': 'Greatest Hits', 'first-release-date': '2026-01-31', 'primary-type': 'Album'}
 # the greatest hit. not gonna report cuz need account. keep here as a note for future
+
+"""
+Table "sparta_cat.song_rating"
+  Column   |          类型          | Collation | Nullable |                 Default
+-----------+------------------------+-----------+----------+-----------------------------------------
+ id        | integer                |           | not null | nextval('song_rating_id_seq'::regclass)
+ song_mbid | character(36)          |           | not null |
+ user_id   | character varying(128) |           | not null |
+ review    | text                   |           |          |
+ rating    | smallint               |           | not null |
+ 
+ """

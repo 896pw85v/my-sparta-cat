@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 import mb_lib
 import db_conn
 app = FastAPI()
+
+sessions: dict[str, str] = {} # sid -> u-name
 
 app.add_middleware(
     CORSMiddleware, 
@@ -28,7 +30,6 @@ def search_for(body: dict):
         # mb_lib.get_songs_same_name()
     if song == '': 
         # just search artist
-        # should do at least three
         res: dict = {}
         # should pass a name instead
         res = mb_lib.get_artist_album_covers(artist)
@@ -36,10 +37,24 @@ def search_for(body: dict):
     # maybe pack artist portrait as well
     return {}
 
-
+import uuid
 @app.post("/log-in")
-def log_in(cre: dict):
+def log_in(cre: dict, res: Response):
     print(cre)
-    return db_conn.sign_user(cre['u-name'])
+    try: 
+        if db_conn.sign_user(cre):
+            # do session id token thing
+            sid: str = uuid.uuid4() # idk how uuid work
+            sessions[sid] = cre['u-name']
+            # res.set_cookie(key='sid', value=sid, httponly=True, max_age=60*60*24, samesite='none', secure=True)
+            return sid # This attempt to set a cookie via a Set-Cookie header was blocked due to user preference
+        else:
+            return ''
+    except:
+        return ''
 
+@app.get("/sid")
+def sid(cookie):
+    print(cookie)
+    return 0
 
