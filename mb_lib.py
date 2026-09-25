@@ -62,17 +62,54 @@ def fetch_artist_album_with_cover(artist_id: str) -> list[dict]:
             images.append(image) # maybe just return a subset of api response
             # try do same site by sending html pages from back end
         except: 
-            pass # or continue
+            continue
     # cache to db
     artist_album_cache[artist_id] = images
     print(len(images))
     return images
 
-def get_songs_same_name(name: str, offset: int = 0): 
-    res: dict = musicbrainzngs.search_recordings(recording=name, limit = 10) # recording aka songs?
+def get_songs_same_name(name: str, artist: str, offset: int = 0) -> list[dict]:
+    """Must have song `name` and artist. Return list of `dict`s containing: 
+    title, id, artist-credit-phrase, and images (list)""" 
+    # I can't imagine how this would throw error
+    res: dict = musicbrainzngs.search_recordings(recording=name, limit = 10, offset=offset, artist=artist) # recording aka songs?
     # print(res.keys())
     rec_list = res['recording-list']
-    return rec_list
+    songs: list = []
+    phrases = []
+    for e in rec_list:
+        try: 
+            # if e['artist-credit-phrase'] in phrases: 
+            #     continue
+            song: dict = {}
+            song['title'] = e['title']
+            song['id'] = e['id']
+            song['artist-credit-phrase'] = e['artist-credit-phrase']
+            images = musicbrainzngs.get_release_group_image_list(e['release-list'][0]['release-group']['id']) # hard coded yes
+            song['images'] = images['images']
+            songs.append(song)
+            phrases.append(e['artist-credit-phrase'])
+        except: 
+            continue
+    return songs
+"""
+list: 
+    {
+    id -> id string, 
+    title -> title string
+    artist-credit-phrase -> artist-credit-phrase (artists), 
+    images -> [{
+        thumbnails -> {
+            size -> url, 
+            ..., 
+            ...
+            }
+        },
+        ...
+        ]
+    },
+    ...
+"""
 
 """
 [x] front and back talks!!
@@ -82,18 +119,8 @@ def get_songs_same_name(name: str, offset: int = 0):
 [ ] writing review
 [ ] logged in with session and cookie
 [ ] https (live server), hashing password
+[ ] improve search by weighing popular artists
 """
 # {'id': 'fc5ecd80-3961-4036-ae95-1e629428562f', 'type': 'Album', 'title': 'Greatest Hits', 'first-release-date': '2026-01-31', 'primary-type': 'Album'}
 # the greatest hit. not gonna report cuz need account. keep here as a note for future
 
-"""
-Table "sparta_cat.song_rating"
-  Column   |          类型          | Collation | Nullable |                 Default
------------+------------------------+-----------+----------+-----------------------------------------
- id        | integer                |           | not null | nextval('song_rating_id_seq'::regclass)
- song_mbid | character(36)          |           | not null |
- user_id   | character varying(128) |           | not null |
- review    | text                   |           |          |
- rating    | smallint               |           | not null |
- 
- """

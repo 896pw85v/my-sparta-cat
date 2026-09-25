@@ -29,15 +29,14 @@ def search_for(body: dict):
     print(body) # artist: ... , song: ...
     artist: str = body['artist'] or 'the weeknd'
     song: str = body['song']
-    if artist == '': 
-        # just search song
-        
-        mb_lib.get_songs_same_name(song)
     if song == '': 
         # just search artist
         res: dict = {}
         # should pass a name instead
         res = mb_lib.get_artist_album_covers(artist)
+        return res
+    else: 
+        res:list = mb_lib.get_songs_same_name(name=song, artist=artist)
         return res
     # maybe pack artist portrait as well
     return {}
@@ -59,51 +58,15 @@ def log_in(cre: dict, res: Response):
         return ''
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.get('/styles.css')
-def give_css():
-    return FileResponse('./web/styles.css')
-
-@app.get('/scripts.js')
-def give_js(): 
-    return FileResponse('./web/scripts.js')
-
-@app.get('/btools.js')
-def give_tools(): 
-    return FileResponse('./web/btools.js')
+@app.post('/write')
+def write_review(review: dict) -> bool: 
+    """write review into db. Returns `bool` indicating success. Recommend keeping a copy local. """
+    mbid: str = review['mbid']
+    uid: str = None # get id from token
+    content: str = review['content']
+    if len(content) > 1000: 
+        return False
+    rating: int = review['rating']
+    if rating > 5 or rating < 0: 
+        return False
+    return db_conn.write_into(mbid, uid, content, rating)

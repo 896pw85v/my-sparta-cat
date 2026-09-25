@@ -1,7 +1,8 @@
 import * as tools from "./btools.js"
 
-const releasesDiv = document.getElementById('artist-search');
-const burl = ''//'http://localhost:8000'
+const artistsDiv = document.getElementById('artists-div');
+const songsDiv = document.getElementById('songs-div');
+const burl = 'http://localhost:8000';
 const userProfile = {}
 
 document.getElementById('form').addEventListener('submit', (e) => {
@@ -16,16 +17,32 @@ document.getElementById('form').addEventListener('submit', (e) => {
             "Content-Type": "application/json"
         },})
     .then(res => res.json())
-    .then(res => loadReleases(res))
+    .then(res => {
+        if (!Array.isArray(res)) { 
+            putArtists(res)
+        } else {
+            putSongs(res)
+        }
+    })
     .catch((error) => (console.log(error)))
 })
 
-function loadReleases(name_covers) {
-    releasesDiv.innerHTML = '';
+function putArtists(name_covers) {
+    artistsDiv.innerHTML = '';
     Object.entries(name_covers).forEach(entry => {
         const card = tools.mkCard(entry); // this should be just one of the many cards
-        releasesDiv.appendChild(card);
+        card.addEventListener('click', jumpAlbum);
+        artistsDiv.appendChild(card);
     });   
+}
+
+function putSongs(songs) {
+    songsDiv.innerHTML = '';
+    songs.forEach(song => {
+        const row = tools.mkRow(song);
+        row.addEventListener('click', jumpSong);
+        songsDiv.appendChild(row);
+    })
 }
 
 /*
@@ -108,4 +125,12 @@ function updateUserProfile(username, photoUrl) {
     // Update profile info
     profileName.textContent = username;
     profilePhoto.src = photoUrl || "https://tse1.mm.bing.net/th/id/OIP.KAFZkVR_hmUcavc7Dot5QAAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"; // fallback image
+  }
+
+  function jumpAlbum() {
+
+  }
+
+  function jumpSong() {
+    
   }
