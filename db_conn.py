@@ -26,6 +26,24 @@ def sign_user(user: dict):
         raise Exception('user conflict/clash. (this is probably a db issue)')
     else: 
         return True
+    
+def write_into(mbid: str, uid: str, content: str, rating: int) -> bool: 
+    """
+    Here should do validation again!!!!!!!!!!!!!
+    Write or update a user's review and rating. 
+    Return a `bool` indicating completion. """
+    sql = """INSERT INTO song_rating AS ss (song_mbid, user_id, review, rating) 
+    VALUES (%s, %s, %s, %s)
+    ON CONFLICT (song_mbid, user_id) DO UPDATE 
+    SET review = (%s), rating = (%s) 
+    WHERE ss.song_mbid = %s AND ss.user_id = %s;"""
+    try:
+        # insert. insert don't return anything, therefore can't know result 
+        cur.execute(sql, (mbid, uid, content, rating, content, rating, mbid, uid))
+    except: 
+        return False
+    conn.commit()
+    return True
 # print(conn)
 # cursor = conn.cursor()
 # cursor.execute('SELECT * FROM sparta_cat.users;')
