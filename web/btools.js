@@ -1,72 +1,72 @@
 // complete dom interaction, too ugly
 export function mkCard(pack) {
-    const artistName = pack[0];
-    console.log(artistName)
-    const albums = pack[1];
-    
-    // Create the main card container
-    const artistCard = document.createElement('div');
-    artistCard.classList.add('artist-card');
+  const artistName = pack[0];
+  console.log(artistName)
+  const albums = pack[1];
 
-    // Create the artist info section
-    const artistInfo = document.createElement('div');
-    artistInfo.classList.add('artist-info');
+  // Create the main card container
+  const artistCard = document.createElement('div');
+  artistCard.classList.add('artist-card');
 
-    const h2 = document.createElement('h2');
-    h2.classList.add('artist-name');
-    h2.textContent = artistName;
+  // Create the artist info section
+  const artistInfo = document.createElement('div');
+  artistInfo.classList.add('artist-info');
 
-    // const img = document.createElement('img');
-    // img.classList.add('artist-photo');
-    // img.src = "";
-    // img.alt = `${artistName} Portrait`;
+  const h2 = document.createElement('h2');
+  h2.classList.add('artist-name');
+  h2.textContent = artistName;
 
-    // Assemble artist info
-    artistInfo.appendChild(h2);
-    // artistInfo.appendChild(img);
-    artistCard.appendChild(artistInfo);
+  // const img = document.createElement('img');
+  // img.classList.add('artist-photo');
+  // img.src = "";
+  // img.alt = `${artistName} Portrait`;
 
-    // Create the release tiles container
-    const releaseTiles = document.createElement('div');
-    releaseTiles.classList.add('release-tiles');
+  // Assemble artist info
+  artistInfo.appendChild(h2);
+  // artistInfo.appendChild(img);
+  artistCard.appendChild(artistInfo);
 
-    // Process albums
-    for (let album of albums) {
-        try {
-            const thumbnails = album['images'][0]['thumbnails'];
-        const cover = 'small' in thumbnails ? thumbnails['small'] : thumbnails['250'];
-        // const releaseUrl = album['release']
-        const title = album['title'];
+  // Create the release tiles container
+  const releaseTiles = document.createElement('div');
+  releaseTiles.classList.add('release-tiles');
 
-        // Create individual release tile
-        const releaseTile = document.createElement('div');
-        releaseTile.classList.add('release-tile');
+  // Process albums
+  for (let album of albums) {
+    try {
+      const thumbnails = album['images'][0]['thumbnails'];
+      const cover = 'small' in thumbnails ? thumbnails['small'] : thumbnails['250'];
+      // const releaseUrl = album['release']
+      const title = album['title'];
 
-        const albumImg = document.createElement('img');
-        albumImg.src = cover;
-        albumImg.alt = title + " Cover";
+      // Create individual release tile
+      const releaseTile = document.createElement('div');
+      releaseTile.classList.add('release-tile');
 
-        const span = document.createElement('span');
-        span.classList.add('release-label');
-        span.textContent = title;
+      const albumImg = document.createElement('img');
+      albumImg.src = cover;
+      albumImg.alt = title + " Cover";
 
-        // Assemble release tile
-        releaseTile.appendChild(albumImg);
-        releaseTile.appendChild(span);
-        
-        // Append to container
-        releaseTiles.appendChild(releaseTile);
-        } catch {
-            console.error('error while making tile')
-            console.error(album)
-        }
+      const span = document.createElement('span');
+      span.classList.add('release-label');
+      span.textContent = title;
+
+      // Assemble release tile
+      releaseTile.appendChild(albumImg);
+      releaseTile.appendChild(span);
+
+      // Append to container
+      releaseTiles.appendChild(releaseTile);
+    } catch {
+      console.error('error while making tile')
+      console.error(album)
     }
+  }
 
-    // Append all tiles to the main card
-    artistCard.appendChild(releaseTiles);
+  // Append all tiles to the main card
+  artistCard.appendChild(releaseTiles);
 
-    // Return the completed DOM node
-    return artistCard;
+  // Return the completed DOM node
+  return artistCard;
 }
 
 // good alternative to consider, or just try htmx some day
@@ -109,3 +109,26 @@ export function mkCard(pack) {
   return artistCard;
 }
 */
+
+export function mkRow(item) {
+  console.log('making card', item['title'])
+  console.log(item.images.length);
+  const ima = item.images;
+  const thumbUrl =
+    ima[0].thumbnails?.small ||
+    ima[0].thumbnails?.large ||
+    "";
+  console.log('url', thumbUrl)
+  const row = document.createElement("div");
+  row.className = "song-row";
+
+  row.innerHTML = `
+          <img class="song-thumb" src="${thumbUrl}" alt="${item.title}">
+          <div class="song-info">
+              <p class="song-title">${item.title}</p>
+              <p class="song-artist">${item["artist-credit-phrase"]}</p>
+          </div>
+      `;
+
+  return row
+}
