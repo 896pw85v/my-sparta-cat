@@ -1,7 +1,7 @@
 import * as tools from "./btools.js"
 
 const releasesDiv = document.getElementById('artist-search');
-const burl = 'http://localhost:8000'
+const burl = ''//'http://localhost:8000'
 const userProfile = {}
 
 document.getElementById('form').addEventListener('submit', (e) => {

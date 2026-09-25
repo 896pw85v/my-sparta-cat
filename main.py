@@ -58,10 +58,7 @@ def log_in(cre: dict, res: Response):
     except:
         return ''
 
-@app.get("/sid")
-def sid(cookie):
-    print(cookie)
-    return 0
+
 
 
 
