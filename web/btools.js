@@ -113,6 +113,7 @@ export function mkCard(pack) {
 export function mkRow(item) {
   console.log('making card', item['title'])
   console.log(item.images.length);
+  const id = item.id;
   const ima = item.images;
   const thumbUrl =
     ima[0].thumbnails?.small ||
@@ -120,6 +121,7 @@ export function mkRow(item) {
     "";
   console.log('url', thumbUrl)
   const row = document.createElement("div");
+  row.id = id;
   row.className = "song-row";
 
   row.innerHTML = `
@@ -129,6 +131,6 @@ export function mkRow(item) {
               <p class="song-artist">${item["artist-credit-phrase"]}</p>
           </div>
       `;
-
+  sessionStorage.setItem(id, JSON.stringify(item))
   return row
 }

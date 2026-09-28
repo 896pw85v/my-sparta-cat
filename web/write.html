@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Monet Music Search</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="logo-area">
+      <h1>Monet Music</h1>
+    </div>
+
+    <div id="user-area" class="user-area logged-out">
+      <!-- Logged-out state -->
+      <!-- <button id="login-btn" class="login-btn">Sign In</button> -->
+
+      <!-- Logged-in state -->
+      <div id="profile-box" class="profile-box hidden">
+        <img id="profile-photo" class="profile-photo" src="" alt="User Photo">
+        <span id="profile-name" class="profile-name"></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="review-card canvas" id="reviewCard">
+    <h2 class="review-card-title">Write a Review</h2>
+
+    <!-- Song Info Section -->
+    <div class="song-row-container" id="reviewSongRow">
+      <!-- JS will populate this -->
+    </div>
+    <!-- Rating Input -->
+    <form id="review-form">
+      <label class="review-label" for="rating">Rating (0-5)</label>
+      <input id="rating" type="number" min="0" max="5" class="review-rating" name="rating" required>
+
+
+      <!-- Review Input -->
+      <label class="review-label" for="content">Your Review (Max 1000 characters, for now)</label>
+      <textarea id="content" class="review-textarea" maxlength="1000" name="content"
+        placeholder="Share your thoughts about this song..." required></textarea>
+
+      <button class="review-submit">Submit Review</button>
+    </form>
+  </div>
+
+
+
+  <script type="module" src="write.js"></script>
+</body>
+
+</html>

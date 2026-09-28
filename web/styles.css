@@ -16,7 +16,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 /* header */
@@ -84,6 +84,13 @@ body {
     0 18px 40px rgba(0, 0, 0, 0.12),
     0 0 0 1px rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(6px);
+}
+#artist-search {
+  display: none;
+}
+
+#song-search {
+  display: none;
 }
 
 .title {
@@ -253,6 +260,7 @@ div#blank-ph {
 .song-row {
   display: flex;
   align-items: center;
+  width: 100%;
   padding: 12px;
   border-radius: 12px;
   background: var(--md-sys-color-surface-container-low, #ffffff);
@@ -288,4 +296,27 @@ div#blank-ph {
   font-size: 0.875rem;
   opacity: 0.7;
   margin: 2px 0 0 0;
+}
+
+/* review */
+.review-textarea {
+  width: 100%;
+  height:auto;
+  min-height: 120px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  background: #e9e9e1;
+  display: block;
+  box-sizing: border-box;
+  /* auto resize */
+  resize: none;              /* important: let JS handle resizing */
+  overflow: hidden;          /* hide scrollbars */
+  transition: border-color 0.2s;
+}
+
+input[type=text] {
+  box-sizing: border-box;
 }
