@@ -116,7 +116,7 @@ list:
 [x] account
 [x] writing review
 [x] logged in with session and cookie
-[ ] create new account
+[x] create new account
 [ ] https (live server, SSL...), hashing password
 [ ] public access to db (get rid of local)
 [ ] displaying my reviews

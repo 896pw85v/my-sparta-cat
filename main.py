@@ -8,7 +8,8 @@ import db_conn
 app = FastAPI()
 
 sessions: dict[str, str] = {} # sid -> u-name
-# this can change to smth like sqlite/redis
+# db stores a permanent copy with expiration time
+# keep this one as a cache as well, memory cache + permanent storage
 
 app.add_middleware(
     CORSMiddleware, 
@@ -21,7 +22,6 @@ app.add_middleware(
 # index = Path('./web/index.html')
 @app.get("/")
 def read_root():
-    # return {"Hello": "World"}
     return FileResponse('./web/index.html')
 
 @app.get('/styles.css')
@@ -60,7 +60,10 @@ def search_for(body: dict):
         res:list = mb_lib.get_songs_same_name(name=song, artist=artist)
         return res
     # maybe pack artist portrait as well
-    return {}
+    
+"""
+log-in and sign-up take the same data and does the same thing except one 
+tiny difference - the db part. May do a function"""
 
 @app.post("/log-in")
 def log_in(cre: dict, res: Response, req: Request):
@@ -74,42 +77,72 @@ def log_in(cre: dict, res: Response, req: Request):
         if sid in sessions:
             print('in')
             return {'success': True, 'name': sessions[sid]}
-        # else: 
+        else: 
             # valid uuid, but not in sessions
             # 1. server fresh started
-            # 2. fake sid
-            # In both cases js try a normal log-in
+            # 2. fake sid (what?)
+            # find session in db 
+            user_name = db_conn.find_and_renew_session(sid)
+            if user_name: 
+                # user session is valid
+                res.set_cookie(key='spc-sid', value=sid, httponly=True, max_age=60*60*24, samesite='lax', secure=True)
+                return {'success': True, 'name': user_name}
+            else: 
+                # session expires / simply doesn't exist
+                # delete cookie, make user manually sign-in
+                res.set_cookie(key='spc-sid', value=sid, httponly=True, max_age=0, samesite='lax', secure=True)
+                return {'success': False}
     # else do new log-in
     try: 
-        if db_conn.sign_user(cre):
+        if not (cre['u-name'] and cre['password']): 
+            return {'success': False}
+        new_sid = db_conn.sign_user(cre)
+        if new_sid:
             # do session id token thing
-            sid: str = uuid.uuid4() # idk how uuid work
-            sessions[sid] = cre['u-name']
-            res.set_cookie(key='spc-sid', value=sid, httponly=True, max_age=60*60*24, samesite='lax', secure=True)
+            # sid: str = uuid.uuid4() # idk how uuid work
+            sessions[new_sid] = cre['u-name']
+            res.set_cookie(key='spc-sid', value=new_sid, httponly=True, max_age=60*60*24, samesite='lax', secure=True)
             return {'success': True, 'name': cre['u-name']}
         else:#return smth so html updates
             return {'success': False}
     except:
         return {'success': False}
 # create new acountttttttttttttttttttttttttttttttttt
+@app.post('/sign-up')
+def sign_up(user: dict, res: Response):
+    if 'u-name' in user and 'password' in user: 
+        uname = user['u-name']
+        password = user['password']
+    else: 
+        print(user, 'bad user profile')
+        return {'success': False}
+    if not (uname or password): 
+        return {'success': False}
+    sid: uuid.UUID = db_conn.create_account(uname, password)
+    if sid: 
+        sessions[sid] = uname
+        res.set_cookie(key='spc-sid', value=sid, httponly=True, max_age=60*60*24, samesite='lax', secure=True)
+        return {'success': True, 'name': uname}
+    else: 
+        return {'success': False}
 
 @app.post('/write')
 def write_review(review: dict, req: Request) -> bool: 
     print(review)
     """write review into db. Returns `bool` indicating success. Recommend keeping a copy local. """
     mbid: str = review['mbid']
-    uid: str = req.cookies.get('spc-sid')
-    if uid is None: 
+    sid: str = req.cookies.get('spc-sid')
+    user_name = None
+    if sid is None: 
         return False
     else: 
-        uid = uuid.UUID(uid)
-        if  uid not in sessions: 
+        user_name = db_conn.find_and_renew_session(sid)
+        if  uuid.UUID(sid) not in sessions or user_name is None: 
             return False
-        uid = sessions[uid]
     content: str = review['content']
     if len(content) > 1000: 
         return False
     rating: int = review['rating']
     if rating > 5 or rating < 0: 
         return False
-    return db_conn.write_into(mbid, uid, content, rating)
+    return db_conn.write_into(mbid, user_name, content, rating)

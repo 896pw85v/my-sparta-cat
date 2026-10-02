@@ -9,6 +9,7 @@ document.getElementById('form').addEventListener('submit', (e) => {
     // formdata pack the form, then put it into json
     const fd = new FormData(e.target)
     const myjson = Object.fromEntries(fd)
+    artistsDiv.parentElement.style.display = 'block';
     fetch(burl, {
         method: 'POST',
         body: JSON.stringify(myjson),
@@ -26,14 +27,18 @@ document.getElementById('form').addEventListener('submit', (e) => {
                 putSongs(res)
             }
         })
-        .catch((error) => (console.log(error)))
+        .catch((error) => {
+            console.log(error);
+            artistsDiv.parentElement.style.display = 'none';
+            alert("Search didn't complete. Please try again. ");
+        })
 })
 
 function putArtists(name_covers) {
-    artistsDiv.parentElement.style.display = 'block';
+    // artistsDiv.parentElement.style.display = 'block';
     artistsDiv.innerHTML = '';
     Object.entries(name_covers).forEach(entry => {
-        const card = tools.mkCard(entry); // this should be just one of the many cards
+        const card = tools.mkCard(entry); // one of the many cards
         card.addEventListener('click', jumpAlbum);
         artistsDiv.appendChild(card);
     });
@@ -65,8 +70,7 @@ name_covers: name -> []
 */
 
 const sign = document.getElementById('sign');
-sign.submit
-const create = document.getElementById('create-account')
+
 sign.addEventListener('submit', (e) => {
     e.preventDefault()
     const fd = new FormData(e.target)
@@ -88,14 +92,14 @@ sign.addEventListener('submit', (e) => {
                 // sessionStorage.setItem('sid', data)
                 updateUserProfile(data.name, '')
                 sign.parentElement.style.display = "none"
-                create.parentElement.style.display = 'none'
+                createForm.parentElement.style.display = 'none'
             }
         })
         .catch((reason) => {
             console.error("During log-in: ", reason)
         })
 })
-
+sign.requestSubmit()
 // create account, log in
 
 // {
@@ -152,7 +156,7 @@ function jumpSong(e) {
         .then(data => {
             if (data.success) {
                 console.log(e)
-                const mbid = e.target.id 
+                const mbid = e.target.id
                 console.log(mbid)
                 sessionStorage.setItem('songId', mbid)
                 window.location.href = '/write-review'
@@ -163,4 +167,40 @@ function jumpSong(e) {
             }
         })
 
+}
+
+
+const createForm = document.getElementById('create-account');
+createForm.addEventListener('submit', createAccount);
+function createAccount(e) {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    const myjson = Object.fromEntries(fd);
+    if (myjson['password'] != myjson['confirm-password']) {
+        alert('Password is not confirmed. '); // this can be real time detecting
+        return;
+    }
+    delete myjson['confirm-password'];
+    console.log(myjson)
+    fetch(burl + '/sign-up', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(myjson)
+    }).then(res => res.json())
+        .then(data => {
+            console.log(data)
+            if (data.success) {
+                // sessionStorage.setItem('sid', data)
+                updateUserProfile(data.name, '')
+                sign.parentElement.style.display = "none"
+                createForm.parentElement.style.display = 'none'
+            }
+        })
+        .catch((reason) => {
+            console.error("During log-in: ", reason)
+        })
 }

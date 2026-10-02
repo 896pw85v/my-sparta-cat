@@ -10,3 +10,4 @@ wheels/
 .venv
 little_diary.md
 debug.py
+sql.sql
