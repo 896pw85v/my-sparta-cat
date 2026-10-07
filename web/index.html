@@ -12,9 +12,9 @@
     <div class="logo-area">
       <h1>Monet Music</h1>
     </div>
-  
+
     <div id="user-area" class="user-area logged-out">
-  
+
       <!-- Logged-in state -->
       <div id="profile-box" class="profile-box hidden">
         <img id="profile-photo" class="profile-photo" src="" alt="User Photo">
@@ -22,7 +22,7 @@
       </div>
     </div>
   </header>
-  
+
   <div class="canvas" id="search-div">
     <h1 class="title">Monet Music Search</h1>
     <p class="subtitle">
@@ -49,7 +49,7 @@
   <div id="artist-search" class="canvas">
     <h1 class="title">His / her releases: </h1>
     <div id="artists-div">
-      <div id="blank-ph">Thinking...</div>
+      <!-- <div id="blank-ph">Thinking...</div> -->
       <!-- from js -->
 
     </div>
@@ -58,42 +58,63 @@
   <div id="song-search" class="canvas">
     <h1 class="title">Song results</h1>
     <div id="songs-div">
-      <div id="blank-ph">Thinking...</div>
+      <div id="blank-ph">Thinking... <p>Due to the physical distance of our server, response might take a while. In the mean time, have some fun. </p>
+        <iframe style = "width: 100%; height: 550px; overflow: hidden; border: none;" src = "https://playpager.com/embed/wordpuzzle/index.html" title="Word Puzzle" scrolling = "no"></iframe>
+      </div>
       <!-- from js -->
 
     </div>
   </div>
-
-   <div class="auth-card canvas">
+<!-- artist thinks when searching for songs
+ 
+ no back up for when server is down - thinkinggggggg -->
+  <div class="auth-card canvas">
     <h2>Welcome</h2>
     <form id="sign">
-      <label for="u-name">ID</label>
-      <input type="text" id="u-name" name="u-name" placeholder="Your name">
+      <div class="field-group">
+        <label for="u-name">ID</label>
+        <input type="text" id="u-name" name="u-name" placeholder="Your name">
+      </div>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Your password">
+      <div class="field-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Your password">
+      </div>
 
-      <button type="submit">Continue</button>
+      <div class="actions">
+        <button type="submit">Continue</button>
+      </div>
     </form>
   </div>
 
   <div class="auth-card canvas">
     <h2>Create New Account</h2>
     <form id="create-account">
-      <label for="u-name">ID</label>
-      <input type="text" id="u-name" name="u-name" placeholder="Choose a username">
+      <div class="field-group">
+        <label for="u-name">ID</label>
+        <input type="text" id="u-name" name="u-name" placeholder="Choose a username">
+      </div>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Choose a password">
+      <div class="field-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Choose a password">
+      </div>
 
-      <label for="confirm-password">Confirm Password</label>
-      <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password">
+      <div class="field-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password">
+      </div>
 
-      <button type="submit">Sign Up</button>
+      <div class="actions">
+        <button type="submit">Sign Up</button>
+      </div>
     </form>
   </div>
 
-
+  <section id="my-reviews" class="canvas">
+    <h2>My ratings</h2>
+    
+  </section>
 
   <script type="module" src="scripts.js"></script>
 </body>

@@ -119,8 +119,11 @@ list:
 [x] create new account
 [ ] https (live server, SSL...), hashing password
 [ ] public access to db (get rid of local)
-[ ] displaying my reviews
+[x] displaying my reviews
 [ ] improve search by weighing popular artists
+[ ] small local storage
+[ ] dark mode
+[ ] multi lang? (these are mostly frontend stuff)
 [ ] better js
 [ ] OR, rebuild with more modern stack first
 """

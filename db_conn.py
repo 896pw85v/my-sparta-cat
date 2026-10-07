@@ -43,29 +43,6 @@ def sign_user(user: dict):
         print(new_sid)
         return new_sid
     
-def write_into(mbid: str, user_name: str, content: str, rating: int) -> bool: 
-    """
-    Here should do validation again!!!!!!!!!!!!!
-    Write or update a user's review and rating. 
-    Return a `bool` indicating completion. """
-    conn = create_conn()
-    cur = conn.cursor()
-    cur.execute('SET search_path = sparta_cat')
-    sql = """INSERT INTO song_rating AS ss (song_mbid, user_name, review, rating) 
-    VALUES (%s, %s, %s, %s)
-    ON CONFLICT (song_mbid, user_name) DO UPDATE 
-    SET review = (%s), rating = (%s) 
-    WHERE ss.song_mbid = %s AND ss.user_name = %s;"""
-    try:
-        # insert. insert don't return anything, therefore can't know result 
-        cur.execute(sql, (mbid, user_name, content, rating, content, rating, mbid, user_name))
-    except: 
-        conn.rollback()
-        conn.close()
-        return False
-    conn.commit()
-    conn.close()
-    return True
 
 def create_account(user_name: str, pass_hash: str): 
     """
@@ -147,4 +124,64 @@ def new_session(cur, uname: str):
         print(sid)
         return sid[0]
 
+def write_into(mbid: str, user_name: str, content: str, rating: int) -> bool: 
+    """
+    Here should do validation again!!!!!!!!!!!!!
+    Write or update a user's review and rating. 
+    Return a `bool` indicating completion. """
+    conn = create_conn()
+    cur = conn.cursor()
+    cur.execute('SET search_path = sparta_cat')
+    sql = """INSERT INTO song_rating AS ss (song_mbid, user_name, review, rating) 
+    VALUES (%s, %s, %s, %s)
+    ON CONFLICT (song_mbid, user_name) DO UPDATE 
+    SET review = (%s), rating = (%s) 
+    WHERE ss.song_mbid = %s AND ss.user_name = %s;"""
+    try:
+        # insert. insert don't return anything, therefore can't know result 
+        cur.execute(sql, (mbid, user_name, content, rating, content, rating, mbid, user_name))
+    except: 
+        conn.rollback()
+        conn.close()
+        return False
+    conn.commit()
+    conn.close()
+    return True
+
+def read_review(user_name: str, mbid: uuid.UUID = None, limit: int = 10, offset: int = 0): 
+    """Fetch this user's rating/reviews on this song, or all of his reviews. 
+    Return text/json. """
+    # my brain is a mesh now im js doing whatever comes in mind
+    conn = create_conn()
+    cur = conn.cursor()
+    cur.execute('SET SEARCH_PATH TO sparta_cat;')
+    if not user_name: 
+        # empty string 
+        return None
+    if not "valid session": 
+        return None # js means - idk how to do thissssss
+    sql = """?"""
+    if not mbid: 
+        sql = """SELECT song_mbid, rating, review FROM song_rating 
+                WHERE user_name = %s
+                ORDER BY last_updated
+                LIMIT %s
+                OFFSET %s;"""
+        cur.execute(sql, (user_name, limit, offset))
+        res = cur.fetchall() # should be <= 10 entries
+        print(res)
+        conn.close()
+        return res
+    else: 
+        sql = """SELECT song_mbid, rating, review FROM song_rating 
+                WHERE song_mbid = %s::uuid AND user_name = %s
+                ORDER BY last_updated
+                LIMIT %s
+                OFFSET %s;"""
+        cur.execute(sql, (str(mbid), user_name, limit, offset))
+        res = cur.fetchall()
+        print(res)
+        conn.close()
+        return res
+        
 

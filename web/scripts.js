@@ -2,6 +2,8 @@ import * as tools from "./btools.js"
 
 const artistsDiv = document.getElementById('artists-div');
 const songsDiv = document.getElementById('songs-div');
+const blankPh = document.getElementById('blank-ph').cloneNode(true);
+console.log(blankPh);
 const burl = ''; // same origin
 
 document.getElementById('form').addEventListener('submit', (e) => {
@@ -9,7 +11,10 @@ document.getElementById('form').addEventListener('submit', (e) => {
     // formdata pack the form, then put it into json
     const fd = new FormData(e.target)
     const myjson = Object.fromEntries(fd)
-    artistsDiv.parentElement.style.display = 'block';
+    // artistsDiv.parentElement.style.display = 'block';
+    songsDiv.replaceChildren(blankPh);
+    blankPh.style.display = 'block';
+    songsDiv.parentElement.style.display = 'block';
     fetch(burl, {
         method: 'POST',
         body: JSON.stringify(myjson),
@@ -29,7 +34,7 @@ document.getElementById('form').addEventListener('submit', (e) => {
         })
         .catch((error) => {
             console.log(error);
-            artistsDiv.parentElement.style.display = 'none';
+            songsDiv.parentElement.style.display = 'none';
             alert("Search didn't complete. Please try again. ");
         })
 })
@@ -38,6 +43,7 @@ function putArtists(name_covers) {
     // artistsDiv.parentElement.style.display = 'block';
     artistsDiv.innerHTML = '';
     Object.entries(name_covers).forEach(entry => {
+        localStorage.setItem(entry.id, JSON.stringify(entry))
         const card = tools.mkCard(entry); // one of the many cards
         card.addEventListener('click', jumpAlbum);
         artistsDiv.appendChild(card);
@@ -46,8 +52,9 @@ function putArtists(name_covers) {
 
 function putSongs(songs) {
     songsDiv.parentElement.style.display = 'block';
-    songsDiv.innerHTML = '';
+    blankPh.style.display = 'none';
     songs.forEach(song => {
+        localStorage.setItem(song.id, JSON.stringify(song));
         const row = tools.mkRow(song);
         row.addEventListener('click', jumpSong);
         songsDiv.appendChild(row);
@@ -90,7 +97,8 @@ sign.addEventListener('submit', (e) => {
             console.log(data)
             if (data.success) {
                 // sessionStorage.setItem('sid', data)
-                updateUserProfile(data.name, '')
+                updateUserProfile(data.name, '');
+                loadMyReviews(data.name, null, 10, 0)
                 sign.parentElement.style.display = "none"
                 createForm.parentElement.style.display = 'none'
             }
@@ -195,7 +203,8 @@ function createAccount(e) {
             console.log(data)
             if (data.success) {
                 // sessionStorage.setItem('sid', data)
-                updateUserProfile(data.name, '')
+                updateUserProfile(data.name, '');
+                loadMyReviews(data.name, null, 10, 0)
                 sign.parentElement.style.display = "none"
                 createForm.parentElement.style.display = 'none'
             }
@@ -203,4 +212,28 @@ function createAccount(e) {
         .catch((reason) => {
             console.error("During log-in: ", reason)
         })
+}
+function loadMyReviews(name, mbid, limit, offset) {
+    offset = 0; limit = 10;
+    fetch(burl + '/reviews', {
+        body: JSON.stringify({
+            'offset': offset, 
+            'limit': limit, 
+            'name': name, 
+            'mbid': mbid
+        }), 
+        method: "POST", 
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(reviews => {
+        console.log(reviews);
+        const cont = document.getElementById('my-reviews');
+        for (let each of reviews) {
+            const reviewCard = tools.makeReviewCard(each)
+            cont.appendChild(reviewCard)
+        }
+    })
 }

@@ -27,7 +27,10 @@ form.addEventListener('submit', (e) => {
     .then(res => res.json())
     .then(data => {
         console.log(data)
-        if (data === true) alert("Submitted. ");
+        if (data === true) {
+            alert("Submitted. ");
+            history.back();
+        }
         else {
             alert("Submit failed. Please try again later. ")
         }

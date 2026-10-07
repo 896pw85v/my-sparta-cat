@@ -134,3 +134,20 @@ export function mkRow(item) {
   sessionStorage.setItem(id, JSON.stringify(item))
   return row
 }
+
+export function makeReviewCard(review) {
+  console.log("printing review: ", review)
+  const id = review.mbid;
+  console.log(typeof id, id);
+  const song_info = JSON.parse(localStorage.getItem(id));
+  console.log(typeof song_info, song_info)
+  const songRow = mkRow(song_info);
+  const card = document.createElement('div');
+  // card.id = id; // maybe don't need id
+  // card.classList.add()
+  card.appendChild(songRow);
+  card.innerHTML += `
+  <p class="ratings>${review.rating}</p>
+  <p class="reviews">${review.review}</p>`
+  return card;
+}

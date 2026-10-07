@@ -7,7 +7,7 @@ import mb_lib
 import db_conn
 app = FastAPI()
 
-sessions: dict[str, str] = {} # sid -> u-name
+sessions: dict[uuid.UUID, str] = {} # sid -> u-name
 # db stores a permanent copy with expiration time
 # keep this one as a cache as well, memory cache + permanent storage
 
@@ -133,11 +133,13 @@ def write_review(review: dict, req: Request) -> bool:
     mbid: str = review['mbid']
     sid: str = req.cookies.get('spc-sid')
     user_name = None
-    if sid is None: 
+    if sid is None: # user is not logged in at all, shouldn't need this but anyway
         return False
+    elif sid in sessions: 
+        user_name = sessions[sid]
     else: 
         user_name = db_conn.find_and_renew_session(sid)
-        if  uuid.UUID(sid) not in sessions or user_name is None: 
+        if user_name is None: 
             return False
     content: str = review['content']
     if len(content) > 1000: 
@@ -146,3 +148,19 @@ def write_review(review: dict, req: Request) -> bool:
     if rating > 5 or rating < 0: 
         return False
     return db_conn.write_into(mbid, user_name, content, rating)
+
+@app.post('/reviews')
+def read_reviews(user: dict, req: Request):
+    user_name: str = user['name']
+    mbid: uuid.UUID = uuid.UUID(user['mbid']) if user['mbid'] else None
+    limit: int = user['limit']
+    offset: int = user['offset']
+    reviews = db_conn.read_review(user_name, mbid, limit, offset)
+    res: list = []
+    for t in reviews: 
+        res.append({
+            'mbid': t[0],
+            'rating': t[1],
+            'review': t[2]
+        })
+    return res
