@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS song_rating
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT rating_range CHECK (rating >= 1 AND rating <= 5)
-)
+);
 
 CREATE TABLE IF NOT EXISTS sessions
 (
@@ -36,10 +36,3 @@ CREATE TABLE IF NOT EXISTS sessions
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
-
-CREATE TABLE sessions (
-    user_name VARCHAR(128) NOT NULL REFERENCES users(user_name), 
-    sid uuid UNIQUE NOT NULL DEFAULT gen_random_uuid(),
-    expire_by DATE DEFAULT CURRENT_DATE + 30
-);
-

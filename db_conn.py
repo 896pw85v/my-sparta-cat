@@ -8,13 +8,18 @@ import uuid
 
 # pg Admin
 # py -> pg, then do logging in
-
+import json
+data = {}
+# Open and read JSON file
+with open('fake_db.json', 'r', encoding='utf-8') as file:
+    data = json.load(file) 
 def create_conn(): 
-    return psycopg2.connect(database="postgres", 
-                        user="kitty",
-                        password="P@ssw0rd",
-                        host="localhost",
-                        port="5432")
+
+    return psycopg2.connect(host=data['host'],
+        user=data['user'],
+        password=data['password'],
+        database=data['database'],
+        port=data['port'])
 
 def sign_user(user: dict):
     """Sign in user by checking if the corresponding row exists. 
@@ -24,7 +29,7 @@ def sign_user(user: dict):
         return False
     conn = create_conn()
     cur = conn.cursor()
-    cur.execute('SET search_path = sparta_cat')
+    # cur.execute('SET search_path = sparta_cat')
     cur.execute('SELECT user_name FROM users WHERE user_name = %s AND pass_hash = %s', (user['u-name'], user['password']))
     matched_users: list = cur.fetchall()
     print('users that matched: ', matched_users)
@@ -51,7 +56,7 @@ def create_account(user_name: str, pass_hash: str):
     sql = """INSERT INTO users (user_name, pass_hash) VALUES (%s, %s);"""
     conn = create_conn()
     cur = conn.cursor()
-    cur.execute('SET search_path = sparta_cat;')
+    # cur.execute('SET search_path = sparta_cat;')
     try:
         cur.execute(sql, (user_name, pass_hash))
         sid = new_session(cur, user_name)
@@ -77,7 +82,7 @@ def find_and_renew_session(sid: uuid.UUID):
     try: 
         conn = create_conn()
         cur = conn.cursor()
-        cur.execute('SET search_path = sparta_cat;')
+        # cur.execute('SET search_path = sparta_cat;')
         cur.execute(sql, (sid,))
         user_name = cur.fetchone()
         print(user_name)
@@ -131,7 +136,7 @@ def write_into(mbid: str, user_name: str, content: str, rating: int) -> bool:
     Return a `bool` indicating completion. """
     conn = create_conn()
     cur = conn.cursor()
-    cur.execute('SET search_path = sparta_cat')
+    # cur.execute('SET search_path = sparta_cat')
     sql = """INSERT INTO song_rating AS ss (song_mbid, user_name, review, rating) 
     VALUES (%s, %s, %s, %s)
     ON CONFLICT (song_mbid, user_name) DO UPDATE 
@@ -154,7 +159,7 @@ def read_review(user_name: str, mbid: uuid.UUID = None, limit: int = 10, offset:
     # my brain is a mesh now im js doing whatever comes in mind
     conn = create_conn()
     cur = conn.cursor()
-    cur.execute('SET SEARCH_PATH TO sparta_cat;')
+    # cur.execute('SET SEARCH_PATH TO sparta_cat;')
     if not user_name: 
         # empty string 
         return None

@@ -11,3 +11,5 @@ wheels/
 little_diary.md
 debug.py
 sql.sql
+mysql_conn.py
+db.json

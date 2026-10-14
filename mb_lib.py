@@ -118,7 +118,7 @@ list:
 [x] logged in with session and cookie
 [x] create new account
 [ ] https (live server, SSL...), hashing password
-[ ] public access to db (get rid of local)
+[x] public access to db (get rid of local)
 [x] displaying my reviews
 [ ] improve search by weighing popular artists
 [ ] small local storage
@@ -126,6 +126,7 @@ list:
 [ ] multi lang? (these are mostly frontend stuff)
 [ ] better js
 [ ] OR, rebuild with more modern stack first
+[ ] (?) update to postgres 19 and psycopg3
 """
 # {'id': 'fc5ecd80-3961-4036-ae95-1e629428562f', 'type': 'Album', 'title': 'Greatest Hits', 'first-release-date': '2026-01-31', 'primary-type': 'Album'}
 # the greatest hit. not gonna report cuz need account. keep here as a note for future

@@ -101,10 +101,13 @@ sign.addEventListener('submit', (e) => {
                 loadMyReviews(data.name, null, 10, 0)
                 sign.parentElement.style.display = "none"
                 createForm.parentElement.style.display = 'none'
+            } else {
+                alert("Sign-in failed! Please try again later, or report this issue. ")
             }
         })
         .catch((reason) => {
             console.error("During log-in: ", reason)
+            alert("Sign-in failed! ")
         })
 })
 sign.requestSubmit()
@@ -207,10 +210,13 @@ function createAccount(e) {
                 loadMyReviews(data.name, null, 10, 0)
                 sign.parentElement.style.display = "none"
                 createForm.parentElement.style.display = 'none'
+            } else {
+                alert("Failed to create account. ")
             }
         })
         .catch((reason) => {
             console.error("During log-in: ", reason)
+            alert("Failed to create account. ")
         })
 }
 function loadMyReviews(name, mbid, limit, offset) {
