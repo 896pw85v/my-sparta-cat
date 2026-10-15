@@ -3,7 +3,7 @@ import * as tools from "./btools.js"
 const artistsDiv = document.getElementById('artists-div');
 const songsDiv = document.getElementById('songs-div');
 const blankPh = document.getElementById('blank-ph').cloneNode(true);
-console.log(blankPh);
+// console.log(blankPh);
 const burl = ''; // same origin
 
 document.getElementById('form').addEventListener('submit', (e) => {
@@ -11,6 +11,10 @@ document.getElementById('form').addEventListener('submit', (e) => {
     // formdata pack the form, then put it into json
     const fd = new FormData(e.target)
     const myjson = Object.fromEntries(fd)
+    if (myjson.artist.trim() === '' || myjson.song.trim() === '') {
+        alert("Search not valid. ");
+        return;
+    }
     // artistsDiv.parentElement.style.display = 'block';
     songsDiv.replaceChildren(blankPh);
     blankPh.style.display = 'block';
@@ -24,6 +28,9 @@ document.getElementById('form').addEventListener('submit', (e) => {
     })
         .then(res => res.json())
         .then(res => {
+            if (typeof res === "string") {
+                console.error("Search failed. "); return;
+            }
             if (!Array.isArray(res)) {
                 // logic here is artists are {name: images}
                 // songs are arr of [song1, song2, ...]
@@ -33,7 +40,7 @@ document.getElementById('form').addEventListener('submit', (e) => {
             }
         })
         .catch((error) => {
-            console.log(error);
+            console.log("Search error. JSON: " , myjson , "\nDetaild: \n", error);
             songsDiv.parentElement.style.display = 'none';
             alert("Search didn't complete. Please try again. ");
         })
@@ -81,10 +88,10 @@ const sign = document.getElementById('sign');
 sign.addEventListener('submit', (e) => {
     e.preventDefault()
     const fd = new FormData(e.target)
-    console.log(typeof fd)
-    console.log(fd)
+    // console.log(typeof fd)
+    // console.log(fd)
     const myjson = Object.fromEntries(fd)
-    console.log(myjson)
+    console.log("Sign-in form contains: ", myjson)
     fetch(burl + '/log-in', {
         method: "POST",
         headers: {
@@ -94,7 +101,7 @@ sign.addEventListener('submit', (e) => {
         body: JSON.stringify(myjson)
     }).then(res => res.json())
         .then(data => {
-            console.log(data)
+            console.log("Sign-in resonse: ", data)
             if (data.success) {
                 // sessionStorage.setItem('sid', data)
                 updateUserProfile(data.name, '');
@@ -128,7 +135,7 @@ sign.requestSubmit()
 
 /** maybe this should be a tool */
 function updateUserProfile(username, photoUrl) {
-    console.log(username)
+    console.log("Updating user profile for: ", username)
     const profileBox = document.getElementById("profile-box");
     const profilePhoto = document.getElementById("profile-photo");
     const profileName = document.getElementById("profile-name");
@@ -138,7 +145,7 @@ function updateUserProfile(username, photoUrl) {
         profileBox.classList.add("hidden");
         return;
     }
-    console.log('update')
+    console.log('Valid profile. Continue update. ')
     // Logged-in state
     profileBox.classList.remove("hidden");
 
@@ -166,10 +173,16 @@ function jumpSong(e) {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                console.log(e)
+                console.log("jump song event", e)
+                console.log("jump song target", e.target)
                 const mbid = e.target.id
-                console.log(mbid)
-                sessionStorage.setItem('songId', mbid)
+                console.log("Target song id: ", mbid)
+                sessionStorage.setItem('songId', mbid);
+                // verify again
+                if (!sessionStorage.getItem('songId')) {
+                    alert("Please try again");
+                    return;
+                }
                 window.location.href = '/write-review'
 
             } else {
@@ -193,7 +206,7 @@ function createAccount(e) {
         return;
     }
     delete myjson['confirm-password'];
-    console.log(myjson)
+    console.log("Create account package: ", myjson)
     fetch(burl + '/sign-up', {
         method: "POST",
         headers: {
@@ -203,7 +216,7 @@ function createAccount(e) {
         body: JSON.stringify(myjson)
     }).then(res => res.json())
         .then(data => {
-            console.log(data)
+            console.log("Create account response: ", data)
             if (data.success) {
                 // sessionStorage.setItem('sid', data)
                 updateUserProfile(data.name, '');
@@ -235,7 +248,7 @@ function loadMyReviews(name, mbid, limit, offset) {
     })
     .then(res => res.json())
     .then(reviews => {
-        console.log(reviews);
+        console.log("Review(s) received: ", reviews);
         const cont = document.getElementById('my-reviews');
         for (let each of reviews) {
             const reviewCard = tools.makeReviewCard(each)

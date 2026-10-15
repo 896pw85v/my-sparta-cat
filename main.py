@@ -47,9 +47,11 @@ def give_write_js():
 
 @app.post("/")
 def search_for(body: dict):
-    print(body) # artist: ... , song: ...
+    print("search for: ", body) # artist: ... , song: ...
     artist: str = body['artist'] or 'the weeknd'
     song: str = body['song']
+    if artist.strip() == "" or song.strip() == "": 
+        return "Empty search. "
     if song == '': 
         # just search artist
         res: dict = {}
@@ -67,15 +69,15 @@ tiny difference - the db part. May do a function"""
 
 @app.post("/log-in")
 def log_in(cre: dict, res: Response, req: Request):
-    print(sessions)
-    print(cre)
+    print("Current seesions in memory: ", sessions)
+    print("User cre: ", cre)
     sid_from_cookie = req.cookies.get('spc-sid', '')
     if sid_from_cookie: 
         # cookie contains sid
         sid = uuid.UUID(sid_from_cookie)
-        print(sid)
+        print("sid from cookie: ", sid)
         if sid in sessions:
-            print('in')
+            print('User in cached session. ')
             return {'success': True, 'name': sessions[sid]}
         else: 
             # valid uuid, but not in sessions
@@ -128,7 +130,7 @@ def sign_up(user: dict, res: Response):
 
 @app.post('/write')
 def write_review(review: dict, req: Request) -> bool: 
-    print(review)
+    print("Review received: ", review)
     """write review into db. Returns `bool` indicating success. Recommend keeping a copy local. """
     mbid: str = review['mbid']
     sid: str = req.cookies.get('spc-sid')

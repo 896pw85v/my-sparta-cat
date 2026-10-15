@@ -26,7 +26,7 @@ form.addEventListener('submit', (e) => {
     })
     .then(res => res.json())
     .then(data => {
-        console.log(data)
+        console.log("Rating response: ", data)
         if (data === true) {
             alert("Submitted. ");
             history.back();
@@ -73,7 +73,7 @@ const rowDiv = document.getElementById('reviewSongRow')
 window.onload = (event) => {
     // prompt("loaded");
     const id = sessionStorage.getItem('songId')
-    if (id === null) {
+    if (id === null || id == "") {
         // this check would probably never be true since I ensured on 
         // the last page that un-logged-in users cannot access this page
         alert("Status shows that there is no song selected to rate. Maybe you shouldn't be on this page. Redirecting you to the previous page. ")

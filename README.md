@@ -1,4 +1,6 @@
 # Sparta Cat
+Currently hosted and running on: https://my-sparta-cat.fastapicloud.dev. Take a look! 
+
 This is a song rating application project inspired by my UX Design course, for which we drafted the "look" of the app. And now, this serves as my attempt to implement it. 
 
 ## Dev Instruction
@@ -21,16 +23,17 @@ To test the program, run `uv run fastapi dev`
 
 ## Current "System Design"
 Backend is FastAPI which is also the frontend, providing frontend resources like html files and backend data. 
-However, currently the backend serves only as a relay to the www.musicbrainz.org API, collecting data and send to users' browsers. User credential and song rating are now stored in PostgreSQL database, which in the future will be hosted on cloud. 
+However, currently the backend serves only as a relay to the www.musicbrainz.org API, collecting data and send to users' browsers. User credential and song rating are now stored in PostgreSQL database, which is hosted on cloud. 
 
 ## Credits
 The inspiration of this project: 
 - https://github.com/Bishop-V
 - https://github.com/Adrianne05
 - Tejan
-- https://github.com/JonIbarlin
+- https://github.com/JonIbarlin 
 
 Other: 
+- FastAPI for the framework and deployment. 
 - Special thanks to https://musicbrainz.org/ for their dataset and API
 - [PostgreSQL](https://www.postgresql.org/) is the best database in the world. 
 - 李勃老师: https://space.bilibili.com/427191943

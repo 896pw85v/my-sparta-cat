@@ -1,7 +1,8 @@
 // complete dom interaction, too ugly
 export function mkCard(pack) {
+  console.log("Making card: ", pack)
   const artistName = pack[0];
-  console.log(artistName)
+  console.log("artist name: ", artistName)
   const albums = pack[1];
 
   // Create the main card container
@@ -111,15 +112,15 @@ export function mkCard(pack) {
 */
 
 export function mkRow(item) {
-  console.log('making card', item['title'])
-  console.log(item.images.length);
+  console.log('making row', item)
+  // console.log(item.images.length);
   const id = item.id;
   const ima = item.images;
   const thumbUrl =
     ima[0].thumbnails?.small ||
     ima[0].thumbnails?.large ||
     "";
-  console.log('url', thumbUrl)
+  console.log('url for ', item.title, " ", thumbUrl)
   const row = document.createElement("div");
   row.id = id;
   row.className = "song-row";
@@ -138,7 +139,7 @@ export function mkRow(item) {
 export function makeReviewCard(review) {
   console.log("printing review: ", review)
   const id = review.mbid;
-  console.log(typeof id, id);
+  console.log("typeof review id" , typeof id, id);
   const song_info = JSON.parse(localStorage.getItem(id));
   console.log(typeof song_info, song_info)
   const songRow = mkRow(song_info);

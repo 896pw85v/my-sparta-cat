@@ -7,7 +7,7 @@ def get_artist_album_covers(name: str) -> dict[str, list]:
     """{artist_name -> list_of_covers}"""
     artist_cover = {}
     artists: dict = search_artists(name)
-    print(type(artists))
+    # print(type(artists))
     for id, name in artists.items(): 
         artist_cover[name] = fetch_artist_album_with_cover(id)
     return artist_cover
@@ -48,7 +48,7 @@ res > Song1 >  - images -> [ {...: ...} ] (idk why but only one dict)
 
 # should receive an id, called by another func
 def fetch_artist_album_with_cover(artist_id: str) -> list[dict]: 
-    print(artist_id)
+    print("Fetch artist album cover: ", artist_id)
     # if artist_id in artist_album_cache: 
     #     return artist_album_cache[artist_id]
     images = []

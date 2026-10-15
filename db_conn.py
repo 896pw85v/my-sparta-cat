@@ -1,5 +1,7 @@
 import psycopg2
 import uuid
+import os
+
 
 # I have no idea there is a psycopg3
 # Every connection creates a new connection object 
@@ -11,8 +13,12 @@ import uuid
 import json
 data = {}
 # Open and read JSON file
-with open('fake_db.json', 'r', encoding='utf-8') as file:
+pwd = os.getcwd()
+print(pwd)
+path = os.path.join(pwd, 'data', 'db.json')
+with open(path, 'r', encoding='utf-8') as file:
     data = json.load(file) 
+    
 def create_conn(): 
 
     return psycopg2.connect(host=data['host'],
@@ -45,14 +51,14 @@ def sign_user(user: dict):
         new_sid = new_session(cur, user['u-name'])
         conn.commit()
         conn.close()
-        print(new_sid)
+        print("new sid for ", user['u-name'], new_sid)
         return new_sid
     
 
 def create_account(user_name: str, pass_hash: str): 
     """
     adds user information to database. """
-    print(user_name, pass_hash)
+    print("Creating account with: ", user_name, pass_hash)
     sql = """INSERT INTO users (user_name, pass_hash) VALUES (%s, %s);"""
     conn = create_conn()
     cur = conn.cursor()
@@ -72,12 +78,12 @@ def create_account(user_name: str, pass_hash: str):
 def find_and_renew_session(sid: uuid.UUID): 
     """
     Find existing, unexpired session id, returns user name if success. """
-    print(sid)
+    print("Looking for: ", sid, type(sid))
     sid = str(sid)
     # psycopg2.extras.register_uuid()
     # sid = psycopg2.extensions.adapt(sid)#.getquoted()
     # sid = psycopg2.extras.UUID_adapter(sid)
-    print(sid, type(sid))
+    # print(sid, type(sid))
     sql = """SELECT user_name FROM sessions WHERE sid = %s::UUID AND expire_by > CURRENT_DATE;"""
     try: 
         conn = create_conn()
@@ -85,7 +91,7 @@ def find_and_renew_session(sid: uuid.UUID):
         # cur.execute('SET search_path = sparta_cat;')
         cur.execute(sql, (sid,))
         user_name = cur.fetchone()
-        print(user_name)
+        print("Valid session with ", sid, "user: ", user_name)
         # here renews expire date. Maybe generate a new one for security
         if user_name: 
             renew = """UPDATE sessions SET expire_by = CURRENT_DATE + 30 WHERE user_name = %s;"""
@@ -97,7 +103,7 @@ def find_and_renew_session(sid: uuid.UUID):
         conn.close()
         return user_name
     except: 
-        print(cur.fetchone())
+        print("This fetch faild: ", cur.fetchone())
         conn.rollback()
         conn.close()
         return None # sounds good
@@ -107,11 +113,11 @@ def new_session(cur, uname: str):
     This function should be used with other functions, therefore expects a prepared cursor. 
     In addition, this function does not handle transaction, any exception will be raised. 
     Return new sid, either brand new or renewed. """
-    print(type(cur))
+    # print(type(cur))
     sql = """SELECT expire_by > current_date, expire_by FROM sessions WHERE user_name = %s;"""
     cur.execute(sql, (uname,)) # i dont think expire_by is needed
     res = cur.fetchone()
-    print(res)
+    print("session for", uname, "expires? ", res)
     if res and res[0]: 
         # user exists and not expired
         # if res[0]: 
@@ -119,14 +125,14 @@ def new_session(cur, uname: str):
         update = """update sessions set sid = gen_random_uuid(), expire_by = current_date + 30 where user_name = %s RETURNING sid;"""
         cur.execute(update, (uname,))
         new_sid = cur.fetchone()[0]
-        print("Generated new sid", new_sid, " for ", uname)
+        print("Renewed. Generated new sid", new_sid, " for ", uname)
         return new_sid
     else: 
-        # new user or expired session
+        # new user or expired session. In future deal with expired sessions
         insert = """insert into sessions (user_name) values (%s) RETURNING sid; """
         cur.execute(insert, (uname,)) # uuid collide? 
         sid = cur.fetchone()
-        print(sid)
+        print("New sid for new user / expired user", uname, sid)
         return sid[0]
 
 def write_into(mbid: str, user_name: str, content: str, rating: int) -> bool: 
@@ -174,7 +180,7 @@ def read_review(user_name: str, mbid: uuid.UUID = None, limit: int = 10, offset:
                 OFFSET %s;"""
         cur.execute(sql, (user_name, limit, offset))
         res = cur.fetchall() # should be <= 10 entries
-        print(res)
+        print("Fetched reviews: ", res)
         conn.close()
         return res
     else: 
